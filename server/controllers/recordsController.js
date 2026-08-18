@@ -151,3 +151,51 @@ export const updateOrderStatus = async (req, res) => {
     res.status(500).json({ message: 'Failed to update order status', error: error.message });
   }
 };
+
+// Create or Update Custom Date Range Record
+export const createOrUpdateRecord = async (req, res) => {
+  try {
+    const { month, label, startDate, endDate, revenue, productCost, revenueTarget, expenses, orders } = req.body;
+
+    const recordKey = month || (startDate && endDate ? `${startDate}_${endDate}` : `custom_${Date.now()}`);
+
+    const updateData = {
+      month: recordKey,
+      label: label || (startDate && endDate ? `${startDate} - ${endDate}` : recordKey),
+      startDate: startDate || '',
+      endDate: endDate || '',
+      isCustomRange: true,
+      revenue: Number(revenue) || 0,
+      productCost: Number(productCost) || 0,
+      revenueTarget: Number(revenueTarget) || 30000,
+    };
+
+    if (Array.isArray(expenses)) {
+      updateData.expenses = expenses;
+    }
+    if (Array.isArray(orders)) {
+      updateData.orders = orders;
+    }
+
+    const record = await MonthlyRecord.findOneAndUpdate(
+      { month: recordKey },
+      { $set: updateData },
+      { new: true, upsert: true }
+    );
+
+    res.status(200).json(record);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to save date range record', error: error.message });
+  }
+};
+
+// Delete a Record / Date Range
+export const deleteRecord = async (req, res) => {
+  try {
+    const { month } = req.params;
+    await MonthlyRecord.findOneAndDelete({ month });
+    res.json({ message: 'Record deleted successfully', month });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete record', error: error.message });
+  }
+};

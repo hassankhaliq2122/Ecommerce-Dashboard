@@ -1,119 +1,200 @@
 import React from 'react';
-import { CalendarDays, Calendar, X } from 'lucide-react';
-import { formatMonthYear } from '../utils/formatters';
+import { Calendar, Plus, Edit2, Trash2, CheckCircle, ChevronRight } from 'lucide-react';
+import { formatCurrency, formatMonthYear } from '../utils/formatters';
 
 function MonthSelector({
   selectedMonth,
   onMonthChange,
-  availableMonths = [],
-  filterMode = 'month', // 'month' | 'custom'
-  onFilterModeChange,
-  startDate = '',
-  endDate = '',
-  onStartDateChange,
-  onEndDateChange,
-  onClearCustomDates,
+  monthlyRecords = [],
+  onOpenAddModal,
+  onOpenEditModal,
+  onDeleteRecord,
+  currencySymbol = '$',
 }) {
-  const defaultMonths = [
-    '2026-01',
-    '2026-02',
-    '2026-03',
-    '2026-04',
-    '2026-05',
-    '2026-06',
-    '2026-07',
-    '2026-08',
-  ];
-
-  const monthsToRender = availableMonths.length > 0 ? availableMonths : defaultMonths;
+  // Format period label cleanly
+  const getPeriodLabel = (record) => {
+    if (record.label) return record.label;
+    if (record.startDate && record.endDate) {
+      try {
+        const d1 = new Date(record.startDate + 'T00:00:00');
+        const d2 = new Date(record.endDate + 'T00:00:00');
+        const s = d1.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+        const e = d2.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+        return `${s} - ${e}`;
+      } catch (err) {
+        return `${record.startDate} - ${record.endDate}`;
+      }
+    }
+    return formatMonthYear(record.month) || record.month;
+  };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
-      {/* Mode Switcher */}
-      {onFilterModeChange && (
-        <div style={{ display: 'flex', backgroundColor: 'var(--bg-card)', padding: '0.2rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-          <button
-            type="button"
-            className={filterMode === 'month' ? 'btn-primary' : 'btn-secondary'}
-            style={{ fontSize: '0.75rem', padding: '0.25rem 0.65rem', borderRadius: 'var(--radius-sm)', border: 'none' }}
-            onClick={() => onFilterModeChange('month')}
-          >
-            By Month
-          </button>
-          <button
-            type="button"
-            className={filterMode === 'custom' ? 'btn-primary' : 'btn-secondary'}
-            style={{ fontSize: '0.75rem', padding: '0.25rem 0.65rem', borderRadius: 'var(--radius-sm)', border: 'none' }}
-            onClick={() => onFilterModeChange('custom')}
-          >
-            Custom Dates
-          </button>
-        </div>
-      )}
-
-      {filterMode === 'month' ? (
-        <div className="month-selector-wrapper">
-          <div className="month-selector-label">
-            <CalendarDays size={16} color="var(--brand-500)" />
-            <span>Period:</span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', width: '100%' }}>
+      {/* Top Action Header for Date Ranges */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.6rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ padding: '0.35rem', borderRadius: 'var(--radius-sm)', backgroundColor: 'var(--brand-100)', color: 'var(--brand-600)' }}>
+            <Calendar size={16} />
           </div>
+          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}>
+            Saved Date Ranges / Periods:
+          </span>
+        </div>
 
-          <select
-            className="month-dropdown-select"
-            value={selectedMonth}
-            onChange={(event) => {
-              if (onMonthChange) {
-                onMonthChange(event.target.value);
-              }
+        {onOpenAddModal && (
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={onOpenAddModal}
+            style={{
+              padding: '0.35rem 0.75rem',
+              fontSize: '0.8rem',
+              borderRadius: 'var(--radius-md)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              fontWeight: 600,
+              boxShadow: '0 2px 8px rgba(99, 102, 241, 0.25)',
             }}
-            aria-label="Select month"
           >
-            {monthsToRender.map((m) => (
-              <option key={m} value={m}>
-                {formatMonthYear(m)}
-              </option>
-            ))}
-          </select>
-        </div>
-      ) : (
-        <div className="month-selector-wrapper" style={{ gap: '0.5rem', padding: '0.3rem 0.65rem' }}>
-          <div className="month-selector-label">
-            <Calendar size={16} color="var(--brand-500)" />
-            <span>Range:</span>
-          </div>
+            <Plus size={15} />
+            <span>Add Date Range (e.g. 3 Jul - 3 Aug)</span>
+          </button>
+        )}
+      </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-            <input
-              type="date"
-              className="form-input"
-              style={{ width: '130px', padding: '0.25rem 0.4rem', fontSize: '0.75rem', height: '30px' }}
-              value={startDate}
-              placeholder="From"
-              onChange={(e) => onStartDateChange && onStartDateChange(e.target.value)}
-            />
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>-</span>
-            <input
-              type="date"
-              className="form-input"
-              style={{ width: '130px', padding: '0.25rem 0.4rem', fontSize: '0.75rem', height: '30px' }}
-              value={endDate}
-              placeholder="To"
-              onChange={(e) => onEndDateChange && onEndDateChange(e.target.value)}
-            />
-            {(startDate || endDate) && onClearCustomDates && (
-              <button
-                type="button"
-                className="btn-icon"
-                onClick={onClearCustomDates}
-                title="Reset custom date range"
-                style={{ padding: '0.25rem', color: 'var(--rose-600)' }}
-              >
-                <X size={14} />
-              </button>
-            )}
+      {/* Horizontal Tabs Container */}
+      <div
+        className="date-range-tabs-container"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          overflowX: 'auto',
+          padding: '0.3rem 0.2rem',
+          scrollbarWidth: 'thin',
+        }}
+      >
+        {monthlyRecords.length === 0 ? (
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', italic: 'true' }}>
+            No date ranges saved yet. Click "+ Add Date Range" above to create one.
           </div>
-        </div>
-      )}
+        ) : (
+          monthlyRecords.map((record) => {
+            const isSelected = record.month === selectedMonth;
+            const label = getPeriodLabel(record);
+
+            // Compute net profit for pill preview
+            const rev = Number(record.revenue) || 0;
+            const cost = Number(record.productCost) || 0;
+            const exp = (record.expenses || []).reduce((acc, e) => acc + (Number(e.amount) || 0), 0);
+            const netProfit = rev - cost - exp;
+
+            return (
+              <div
+                key={record.month}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '0.35rem 0.75rem',
+                  borderRadius: 'var(--radius-md)',
+                  backgroundColor: isSelected ? 'var(--brand-600)' : 'var(--bg-card)',
+                  color: isSelected ? '#ffffff' : 'var(--text-main)',
+                  border: isSelected ? '1px solid var(--brand-600)' : '1px solid var(--border-color)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  fontSize: '0.8rem',
+                  fontWeight: isSelected ? 600 : 500,
+                  whiteSpace: 'nowrap',
+                  boxShadow: isSelected
+                    ? '0 4px 12px rgba(99, 102, 241, 0.3)'
+                    : '0 1px 3px rgba(0, 0, 0, 0.05)',
+                  userSelect: 'none',
+                }}
+                onClick={() => onMonthChange && onMonthChange(record.month)}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  {isSelected && <CheckCircle size={14} color="#ffffff" />}
+                  <span>{label}</span>
+                </div>
+
+                {/* Profit Badge preview */}
+                <span
+                  style={{
+                    fontSize: '0.7rem',
+                    padding: '0.15rem 0.4rem',
+                    borderRadius: 'var(--radius-sm)',
+                    backgroundColor: isSelected
+                      ? 'rgba(255, 255, 255, 0.2)'
+                      : netProfit >= 0
+                      ? 'var(--emerald-50)'
+                      : 'var(--rose-50)',
+                    color: isSelected
+                      ? '#ffffff'
+                      : netProfit >= 0
+                      ? 'var(--emerald-700)'
+                      : 'var(--rose-700)',
+                    fontWeight: 600,
+                  }}
+                >
+                  {formatCurrency(netProfit, currencySymbol)}
+                </span>
+
+                {/* Action buttons (Edit & Delete) for this tab */}
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', marginLeft: '0.2rem' }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {onOpenEditModal && (
+                    <button
+                      type="button"
+                      title="Edit this date range data"
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: isSelected ? 'rgba(255,255,255,0.85)' : 'var(--text-muted)',
+                        cursor: 'pointer',
+                        padding: '0.15rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        borderRadius: 'var(--radius-sm)',
+                      }}
+                      onClick={() => onOpenEditModal(record)}
+                    >
+                      <Edit2 size={13} />
+                    </button>
+                  )}
+
+                  {onDeleteRecord && monthlyRecords.length > 1 && (
+                    <button
+                      type="button"
+                      title="Delete this date range tab"
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: isSelected ? 'rgba(255,255,255,0.85)' : 'var(--rose-500)',
+                        cursor: 'pointer',
+                        padding: '0.15rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        borderRadius: 'var(--radius-sm)',
+                      }}
+                      onClick={() => {
+                        if (window.confirm(`Delete saved tab for "${label}"?`)) {
+                          onDeleteRecord(record.month);
+                        }
+                      }}
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
     </div>
   );
 }

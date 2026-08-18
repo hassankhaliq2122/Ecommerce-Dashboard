@@ -45,7 +45,6 @@ function Sidebar({
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'orders', label: 'Orders', icon: ShoppingCart, badge: unreadOrdersCount > 0 ? unreadOrdersCount : null },
         { id: 'products', label: 'Products', icon: Package, badge: lowStockCount > 0 ? `${lowStockCount} low` : null },
-        { id: 'customers', label: 'Customers', icon: Users },
       ],
     },
     {

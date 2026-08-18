@@ -23,6 +23,10 @@ const OrderSchema = new mongoose.Schema({
 const MonthlyRecordSchema = new mongoose.Schema(
   {
     month: { type: String, required: true, unique: true, index: true },
+    label: { type: String },
+    startDate: { type: String },
+    endDate: { type: String },
+    isCustomRange: { type: Boolean, default: false },
     revenue: { type: Number, required: true, default: 0 },
     revenueTarget: { type: Number, default: 30000 },
     productCost: { type: Number, required: true, default: 0 },

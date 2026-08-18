@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import StatCard from '../components/StatCard';
 import MonthSelector from '../components/MonthSelector';
+import AddDateRangeModal from '../components/AddDateRangeModal';
 import RevenueForm from '../components/RevenueForm';
 import ProductCostForm from '../components/ProductCostForm';
 import ExpenseForm from '../components/ExpenseForm';
@@ -36,13 +37,17 @@ function Dashboard({
   onUpdateRevenue,
   onUpdateCost,
   onUpdateOrderStatus,
+  onSaveDateRange,
+  onDeleteDateRange,
   products = [],
   currencySymbol = '$',
 }) {
   const [editingExpense, setEditingExpense] = useState(null);
   const [searchText, setSearchText] = useState('');
   
-  // Dashboard-level Date Filtering Mode ('month' or 'custom')
+  // Custom Date Range Modal State
+  const [isAddDateRangeOpen, setIsAddDateRangeOpen] = useState(false);
+  const [editingDateRangeRecord, setEditingDateRangeRecord] = useState(null);
   const [filterMode, setFilterMode] = useState('month');
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
@@ -158,21 +163,21 @@ function Dashboard({
           </p>
         </div>
 
-        <div className="header-controls">
+        <div className="header-controls" style={{ width: '100%' }}>
           <MonthSelector
             selectedMonth={selectedMonth}
             onMonthChange={setSelectedMonth}
-            availableMonths={availableMonths}
-            filterMode={filterMode}
-            onFilterModeChange={setFilterMode}
-            startDate={customStartDate}
-            endDate={customEndDate}
-            onStartDateChange={setCustomStartDate}
-            onEndDateChange={setCustomEndDate}
-            onClearCustomDates={() => {
-              setCustomStartDate('');
-              setCustomEndDate('');
+            monthlyRecords={monthlyRecords}
+            onOpenAddModal={() => {
+              setEditingDateRangeRecord(null);
+              setIsAddDateRangeOpen(true);
             }}
+            onOpenEditModal={(rec) => {
+              setEditingDateRangeRecord(rec);
+              setIsAddDateRangeOpen(true);
+            }}
+            onDeleteRecord={onDeleteDateRange}
+            currencySymbol={currencySymbol}
           />
         </div>
       </div>
@@ -330,6 +335,19 @@ function Dashboard({
           setEditingExpense(null);
         }}
         onCancel={() => setEditingExpense(null)}
+        currencySymbol={currencySymbol}
+      />
+
+      {/* Add / Edit Custom Date Range Modal */}
+      <AddDateRangeModal
+        isOpen={isAddDateRangeOpen}
+        onClose={() => {
+          setIsAddDateRangeOpen(false);
+          setEditingDateRangeRecord(null);
+        }}
+        onSave={onSaveDateRange}
+        onDelete={onDeleteDateRange}
+        initialRecord={editingDateRangeRecord}
         currencySymbol={currencySymbol}
       />
     </div>

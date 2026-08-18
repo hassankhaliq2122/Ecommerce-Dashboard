@@ -35,7 +35,7 @@ function ProfitChart({ records = [], currencySymbol = '$' }) {
     const totalExp = (rec.expenses || []).reduce((acc, exp) => acc + (Number(exp.amount) || 0), 0);
     const netProfit = (rec.revenue || 0) - (rec.productCost || 0) - totalExp;
     return {
-      name: formatShortMonth(rec.month),
+      name: rec.label || formatShortMonth(rec.month) || rec.month,
       month: rec.month,
       Profit: netProfit,
       Revenue: rec.revenue || 0,

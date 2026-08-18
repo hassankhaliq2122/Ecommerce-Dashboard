@@ -5,7 +5,6 @@ import AuthPage from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
 import OrdersPage from './pages/OrdersPage';
 import ProductsPage from './pages/ProductsPage';
-import CustomersPage from './pages/CustomersPage';
 import ExpensesPage from './pages/ExpensesPage';
 import ReportsPage from './pages/ReportsPage';
 import SettingsPage from './pages/SettingsPage';
@@ -275,6 +274,39 @@ function App() {
     }
   };
 
+  const handleSaveDateRange = async (recordData) => {
+    setMonthlyRecords((prev) => {
+      const exists = prev.some((r) => r.month === recordData.month);
+      if (exists) {
+        return prev.map((r) => (r.month === recordData.month ? { ...r, ...recordData } : r));
+      }
+      return [...prev, recordData];
+    });
+    setSelectedMonth(recordData.month);
+
+    try {
+      await api.saveDateRangeRecord(recordData);
+    } catch (err) {
+      console.warn('Backend sync failed, saved locally:', err);
+    }
+  };
+
+  const handleDeleteDateRange = async (monthKey) => {
+    setMonthlyRecords((prev) => {
+      const filtered = prev.filter((r) => r.month !== monthKey);
+      if (selectedMonth === monthKey && filtered.length > 0) {
+        setSelectedMonth(filtered[0].month);
+      }
+      return filtered;
+    });
+
+    try {
+      await api.deleteRecord(monthKey);
+    } catch (err) {
+      console.warn('Backend delete failed, updated locally:', err);
+    }
+  };
+
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
@@ -308,8 +340,6 @@ function App() {
         return { title: 'Orders', breadcrumb: 'Management / Orders' };
       case 'products':
         return { title: 'Products', breadcrumb: 'Catalog / Products' };
-      case 'customers':
-        return { title: 'Customers', breadcrumb: 'CRM / Customers' };
       case 'analytics':
       case 'reports':
         return { title: 'Financial Reports', breadcrumb: 'Analytics / Reports' };
@@ -377,6 +407,8 @@ function App() {
               onUpdateRevenue={updateRevenue}
               onUpdateCost={updateCost}
               onUpdateOrderStatus={updateOrderStatus}
+              onSaveDateRange={handleSaveDateRange}
+              onDeleteDateRange={handleDeleteDateRange}
               products={products}
               currencySymbol={settings.currency || '$'}
             />
@@ -395,13 +427,6 @@ function App() {
             <ProductsPage
               products={products}
               onAddProduct={addProduct}
-              currencySymbol={settings.currency || '$'}
-            />
-          )}
-
-          {activePage === 'customers' && (
-            <CustomersPage
-              customers={customers}
               currencySymbol={settings.currency || '$'}
             />
           )}

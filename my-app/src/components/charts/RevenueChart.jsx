@@ -35,7 +35,7 @@ function RevenueChart({ records = [], currencySymbol = '$' }) {
   const chartData = records.map((rec) => {
     const totalExp = (rec.expenses || []).reduce((acc, exp) => acc + (Number(exp.amount) || 0), 0);
     return {
-      name: formatShortMonth(rec.month),
+      name: rec.label || formatShortMonth(rec.month) || rec.month,
       month: rec.month,
       Revenue: rec.revenue || 0,
       Expenses: totalExp,

@@ -71,9 +71,25 @@ export const api = {
     return handleResponse(res);
   },
 
-  // Monthly Records
+  // Monthly & Custom Date Range Records
   async getMonthlyRecords() {
     const res = await fetchWithTimeout(`${API_BASE_URL}/records`);
+    return handleResponse(res);
+  },
+
+  async saveDateRangeRecord(recordData) {
+    const res = await fetchWithTimeout(`${API_BASE_URL}/records/save-period`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(recordData),
+    });
+    return handleResponse(res);
+  },
+
+  async deleteRecord(monthKey) {
+    const res = await fetchWithTimeout(`${API_BASE_URL}/records/${encodeURIComponent(monthKey)}`, {
+      method: 'DELETE',
+    });
     return handleResponse(res);
   },
 

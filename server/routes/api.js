@@ -2,6 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import {
   getMonthlyRecords,
+  createOrUpdateRecord,
+  deleteRecord,
   updateMonthRevenue,
   updateMonthCost,
   addMonthExpense,
@@ -34,6 +36,8 @@ router.get('/auth/me', getMe);
 
 // Records & Finance routes
 router.get('/records', getMonthlyRecords);
+router.post('/records/save-period', createOrUpdateRecord);
+router.delete('/records/:month', deleteRecord);
 router.put('/records/:month/revenue', updateMonthRevenue);
 router.put('/records/:month/product-cost', updateMonthCost);
 router.post('/records/:month/expenses', addMonthExpense);
