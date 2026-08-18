@@ -26,13 +26,27 @@ app.use((req, res, next) => {
 });
 
 // Middleware
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'];
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
 
 app.use(
   cors({
-    origin: isProduction && process.env.ALLOWED_ORIGINS ? allowedOrigins : '*',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, server-to-server)
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.netlify.app') ||
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1')
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true); // Fallback allow for public dashboard endpoints
+    },
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
@@ -75,8 +89,8 @@ app.use((err, req, res, next) => {
 });
 
 // Start Express Server
-const server = app.listen(PORT, () => {
-  console.log(`📡 Shoplytics Server running on http://localhost:${PORT} [${process.env.NODE_ENV || 'development'}]`);
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`📡 Shoplytics Server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
   // Connect to MongoDB Atlas in background
   connectDB();
 });

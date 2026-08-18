@@ -1,10 +1,17 @@
-# Netlify Configuration for my-app directory
+# Netlify Configuration for Shoplytics Dashboard (my-app)
 
 [build]
   publish = "dist"
   command = "npm run build"
 
-# SPA Fallback - Redirect all routes to index.html
+# Proxy /api requests directly to deployed Railway backend
+[[redirects]]
+  from = "/api/*"
+  to = "https://ecommerce-dashboard-production-0c64.up.railway.app/api/:splat"
+  status = 200
+  force = true
+
+# SPA Fallback - Redirect all routes to index.html for client-side routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -20,7 +27,7 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
-# Cache immutable assets
+# Cache immutable assets for maximum performance
 [[headers]]
   for = "/assets/*"
   [headers.values]
