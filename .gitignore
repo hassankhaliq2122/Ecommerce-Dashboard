@@ -9,24 +9,35 @@ lerna-debug.log*
 
 # Node modules
 node_modules/
-
-# Build outputs
-dist/
-dist-ssr/
-*.local
+*/node_modules/
+server/node_modules/
+my-app/node_modules/
 
 # Environment Variables & Secrets
 .env
 .env.*
 !.env.example
+*.env
+*/.env
+*/.env.*
+my-app/.env
+my-app/.env.*
+server/.env
+server/.env.*
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Build outputs
+dist/
+dist-ssr/
+*.local
+my-app/dist/
+
+# Editor and OS
+.vscode/
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+Thumbs.db

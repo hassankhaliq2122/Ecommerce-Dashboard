@@ -55,6 +55,27 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Health check and service status endpoints for Railway / monitoring
+app.get('/health', (req, res) => {
+  const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'connecting';
+  res.json({
+    status: 'healthy',
+    database: dbStatus,
+    uptimeSeconds: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString(),
+  });
+});
+
+app.get('/', (req, res) => {
+  res.json({
+    name: 'Shoplytics API Server',
+    status: 'online',
+    mode: process.env.NODE_ENV || 'development',
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'connecting',
+    endpoints: ['/api/health', '/api/records', '/api/products', '/api/customers', '/api/settings'],
+  });
+});
+
 // API Routes
 app.use('/api', apiRoutes);
 
