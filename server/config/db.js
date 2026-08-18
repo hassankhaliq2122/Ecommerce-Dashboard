@@ -30,9 +30,14 @@ export const resetDatabase = async () => {
 };
 
 export const connectDB = async () => {
+  const uri = process.env.MONGO_URI;
+  if (!uri) {
+    console.warn('⚠️ MONGO_URI not set. Server will run without database. Set it in Railway Variables or .env file.');
+    return false;
+  }
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
-      serverSelectionTimeoutMS: 8000,
+    const conn = await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 15000,
     });
     console.log(`🚀 MongoDB Atlas Connected: ${conn.connection.host}`);
     return true;

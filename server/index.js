@@ -7,10 +7,11 @@ import mongoose from 'mongoose';
 import { connectDB } from './config/db.js';
 import apiRoutes from './routes/api.js';
 
-dotenv.config();
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Load .env from server directory (works whether started from root or server/)
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
