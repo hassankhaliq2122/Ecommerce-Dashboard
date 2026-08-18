@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   LayoutDashboard,
+  CalendarDays,
   ShoppingCart,
   Package,
   Users,
@@ -43,6 +44,7 @@ function Sidebar({
       title: 'Main',
       items: [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { id: 'date-periods', label: 'Date Periods', icon: CalendarDays },
         { id: 'orders', label: 'Orders', icon: ShoppingCart, badge: unreadOrdersCount > 0 ? unreadOrdersCount : null },
         { id: 'products', label: 'Products', icon: Package, badge: lowStockCount > 0 ? `${lowStockCount} low` : null },
       ],
