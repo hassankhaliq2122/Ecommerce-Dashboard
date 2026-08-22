@@ -48,7 +48,6 @@ function ReportsPage({
   const [endDate, setEndDate] = useState('');
   const [revenue, setRevenue] = useState('');
   const [productCost, setProductCost] = useState('');
-  const [revenueTarget, setRevenueTarget] = useState('30000');
   const [customLabel, setCustomLabel] = useState('');
   const [editingKey, setEditingKey] = useState(null);
   const [error, setError] = useState('');
@@ -146,7 +145,6 @@ function ReportsPage({
     setEndDate(record.endDate || '');
     setRevenue(record.revenue !== undefined ? String(record.revenue) : '');
     setProductCost(record.productCost !== undefined ? String(record.productCost) : '');
-    setRevenueTarget(record.revenueTarget !== undefined ? String(record.revenueTarget) : '30000');
     setCustomLabel(record.label || '');
     setExpensesList(Array.isArray(record.expenses) ? [...record.expenses] : []);
     setExpenseName('');
@@ -163,7 +161,6 @@ function ReportsPage({
     setEndDate('');
     setRevenue('');
     setProductCost('');
-    setRevenueTarget('30000');
     setCustomLabel('');
     setExpensesList([]);
     setExpenseName('');
@@ -196,7 +193,7 @@ function ReportsPage({
       endDate,
       revenue: numRevenue,
       productCost: numCost,
-      revenueTarget: Number(revenueTarget) || 30000,
+      revenueTarget: existingRec?.revenueTarget !== undefined ? existingRec.revenueTarget : 30000,
       expenses: expensesList,
       orders: existingRec?.orders || [],
       isCustomRange: true,
@@ -354,19 +351,6 @@ function ReportsPage({
                 className="form-input"
                 value={productCost}
                 onChange={(e) => setProductCost(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="form-label" style={{ fontWeight: 600, fontSize: '0.85rem' }}>Revenue Target ({currencySymbol})</label>
-              <input
-                type="number"
-                min="0"
-                step="any"
-                placeholder="e.g. 60000"
-                className="form-input"
-                value={revenueTarget}
-                onChange={(e) => setRevenueTarget(e.target.value)}
               />
             </div>
           </div>
