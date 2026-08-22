@@ -5,7 +5,6 @@ import AuthPage from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
 import OrdersPage from './pages/OrdersPage';
 import ProductsPage from './pages/ProductsPage';
-import DatePeriodsPage from './pages/DatePeriodsPage';
 import ExpensesPage from './pages/ExpensesPage';
 import ReportsPage from './pages/ReportsPage';
 import SettingsPage from './pages/SettingsPage';
@@ -341,9 +340,6 @@ function App() {
         return { title: 'Orders', breadcrumb: 'Management / Orders' };
       case 'products':
         return { title: 'Products', breadcrumb: 'Catalog / Products' };
-      case 'date-periods':
-        return { title: 'Date Periods & Entry', breadcrumb: 'Management / Date Periods' };
-      case 'analytics':
       case 'reports':
         return { title: 'Financial Reports', breadcrumb: 'Analytics / Reports' };
       case 'expenses':
@@ -434,21 +430,14 @@ function App() {
             />
           )}
 
-          {activePage === 'date-periods' && (
-            <DatePeriodsPage
+          {activePage === 'reports' && (
+            <ReportsPage
               monthlyRecords={monthlyRecords}
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
               onSaveDateRange={handleSaveDateRange}
               onDeleteDateRange={handleDeleteDateRange}
               onNavigateToDashboard={() => setActivePage('dashboard')}
-              currencySymbol={settings.currency || '$'}
-            />
-          )}
-
-          {(activePage === 'analytics' || activePage === 'reports') && (
-            <ReportsPage
-              monthlyRecords={monthlyRecords}
               currencySymbol={settings.currency || '$'}
             />
           )}

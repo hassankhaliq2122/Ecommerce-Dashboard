@@ -44,17 +44,15 @@ function Sidebar({
       title: 'Main',
       items: [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { id: 'date-periods', label: 'Date Periods', icon: CalendarDays },
+        { id: 'reports', label: 'Reports', icon: FileText },
         { id: 'orders', label: 'Orders', icon: ShoppingCart, badge: unreadOrdersCount > 0 ? unreadOrdersCount : null },
         { id: 'products', label: 'Products', icon: Package, badge: lowStockCount > 0 ? `${lowStockCount} low` : null },
       ],
     },
     {
-      title: 'Analytics',
+      title: 'Finance',
       items: [
-        { id: 'analytics', label: 'Sales Analytics', icon: BarChart3 },
         { id: 'expenses', label: 'Expenses', icon: Receipt },
-        { id: 'reports', label: 'Reports', icon: FileText },
       ],
     },
     {
