@@ -237,14 +237,14 @@ cd Ecommerce-Dashboard
    JWT_SECRET=your_super_secret_jwt_key_here
    JWT_EXPIRES_IN=7d
    ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
-   ADMIN_EMAIL=admin@shoplytics.io
-   ADMIN_PASSWORD=password123
+   ADMIN_EMAIL=
+   ADMIN_PASSWORD=
    ADMIN_NAME=Admin User
    ```
 
 3. *(Optional)* Seed or create an admin account using the CLI script:
    ```bash
-   node scripts/createAdmin.js "Admin User" "admin@shoplytics.io" "password123"
+   node scripts/createAdmin.js "Admin User" 
    ```
 
 4. Start the backend development server:
@@ -265,9 +265,9 @@ cd Ecommerce-Dashboard
 
 2. Create a `.env` file inside the `my-app/` folder:
    ```env
-   VITE_API_BASE_URL=http://localhost:5000/api
-   VITE_ADMIN_EMAIL=admin@shoplytics.io
-   VITE_ADMIN_PASSWORD=password123
+   VITE_API_BASE_URL=
+   VITE_ADMIN_EMAIL=
+   VITE_ADMIN_PASSWORD=
    VITE_ADMIN_NAME=Admin User
    ```
 
@@ -285,8 +285,7 @@ You can sign in immediately using the pre-configured credentials:
 
 | Field | Value |
 | :--- | :--- |
-| **Email** | `admin@shoplytics.io` |
-| **Password** | `password123` |
+
 | **Role** | `Administrator` |
 
 > *New accounts can also be created directly from the registration screen on the login page.*
@@ -305,18 +304,16 @@ You can sign in immediately using the pre-configured credentials:
 | `JWT_SECRET` | **Yes** | — | Secret string used to sign JWT tokens |
 | `JWT_EXPIRES_IN` | No | `7d` | Lifetime of issued authentication tokens |
 | `ALLOWED_ORIGINS` | No | `*` | Comma-separated list of allowed CORS origins |
-| `ADMIN_EMAIL` | No | `admin@shoplytics.io` | Default fallback admin email address |
-| `ADMIN_PASSWORD` | No | `password123` | Default fallback admin password |
-| `ADMIN_NAME` | No | `Admin User` | Display name for default admin account |
+
 
 ### Frontend (`my-app/.env`)
 
 | Variable | Required | Default | Description |
 | :--- | :---: | :--- | :--- |
 | `VITE_API_BASE_URL` | No | `/api` | Base URL pointing to the Express backend API |
-| `VITE_ADMIN_EMAIL` | No | `admin@shoplytics.io` | Default email pre-filled on demo login |
-| `VITE_ADMIN_PASSWORD` | No | `password123` | Default password pre-filled on demo login |
-| `VITE_ADMIN_NAME` | No | `Admin User` | Default admin user name |
+| `VITE_ADMIN_EMAIL` | No |``  | Default email pre-filled on demo login |
+| `VITE_ADMIN_PASSWORD` | No | `` | Default password pre-filled on demo login |
+| `VITE_ADMIN_NAME` | No | ` ` | Default admin user name |
 
 ---
 
